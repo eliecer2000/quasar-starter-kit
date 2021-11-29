@@ -1,0 +1,37 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - node --version
+      - npm --version
+      - echo "Installing yarn"
+      - npm install -g yarn
+      - echo "Installing Vue CLI ..."
+      - yarn global add @vue/cli
+      - echo "Installing QUASAR CLI ..."
+      - yarn global add @quasar/cli
+      - echo "Installing dependencies ..."
+      - yarn install
+  # This step is exclusive in case you have environment variables that you want to compile with your project.:
+  # pre_build:
+  #   commands:
+      # - echo "Create environment variables"
+      # - node env.js
+  build:
+    commands:
+      - echo "Building application ..."
+      - quasar build -m ssr
+artifacts:
+  base-directory: "dist/ssr"
+  files:
+    - "**/*"
+  discard-paths: "no"
+
+eb_codebuild_settings:
+  CodeBuildServiceRole: _CodeBuildServiceRole_
+  ComputeType: BUILD_GENERAL1_SMALL
+  Image: aws/codebuild/standard:5.0
+  ImagePullCredentialsType: "CODEBUILD"
+  Timeout: 5
